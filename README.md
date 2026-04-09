@@ -4,15 +4,15 @@
 
 # Letterboxd Machine Learning (LML)
 
-Don't know which movie to choose from your Letterboxd watchlist for tonight? Don't worry, use this machine learning repo to artificially replicate your taste in order to pick the perfect statistical match! No passion, only numbers.
+Your Letterboxd watchlist is too long? No idea which movie to pick for tonight? Don't worry, use this machine learning repo to artificially replicate your taste in order to pick the perfect statistical match! No passion, only numbers.
 
-**Disclaimer**: Movies have a lot of varied features. A machine learning model will struggle to learn on a small sample. To ensure good performance, consistent rating of 1000+ movies is recommended. In this example, we obtain high performances using [Karsten's Letterboxd profile](https://letterboxd.com/Kurstboy/) (2225 rated movies).
+**Disclaimer**: Movies have a lot of varied features. A machine learning model will struggle to learn on a small sample. To ensure good performance, consistent ratings for 1000+ movies is recommended. In this example, we obtain high performances using [Karsten's Letterboxd profile](https://letterboxd.com/Kurstboy/) (2225 rated movies).
 
 ## I. Web-scraping
 
-We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudfare detection in order to obtain a user's rated movies as well as the ratings and likes the user assigned to them ('user_scraper.py').  We use the same method to obtain all movies contained of a user's watchlist ('watchlist_scraper.py').
+We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudfare detection in order to obtain a user's rated movies as well as the ratings and likes the user assigned to them (`user_scraper.py`).  We use the same method to obtain all movies contained of a user's watchlist (`watchlist_scraper.py`).
 
-'movie_scraper.py' uses each of these CSV files to load individual Letterboxd pages of these movies, collecting rating distribution, crew and other available metadata. For actors, we only take into account the first five: having too many actors does not improve model performance. We also compute personalized metrics: rating standard deviation, and specific ratios. With only one browser, this is a time-consuming process (~20min/1000 movies) that could be optimized using multiple workers, at the risk of triggering Cloudfare's firewall.
+`movie_scraper.py` uses each of these CSV files to load individual Letterboxd pages of these movies, collecting rating distribution, crew and other available metadata. For actors, we only take into account the first five: having too many actors does not improve model performance. We also compute personalized metrics: rating standard deviation, and specific ratios. With only one browser, this is a time-consuming process (~20min/1000 movies) that could be optimized using multiple workers, at the risk of triggering Cloudfare's firewall.
 
 ## II. Machine Learning Models
 
