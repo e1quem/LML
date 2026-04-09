@@ -33,14 +33,14 @@ With 3955.2 hours of watchtime, his famous profile is a prime case study. Using 
 
 **Figure 1: Karsten's Rated Movies Overview**
 <p align="center">
-  <img src=out/art/overview.svg width="600">
+  <img src=out/art/overview.svg width="1000">
 </p>
 
 This heatmap [Figure 2] displays missing data in our dataset. We notice that no crucial data, such as avg_rating, is missing. In fact, Letterboxd doesn't compute this metric for low-activity movies: we had to manually calculate the weighted average for these few films to obtain an exploitable dataset. Data cleaning is as always a crucial step, and this graph allows you to spot missing features to need to be manually obtained.
 
 **Figure 2: Karsten's Missing Features Heatmap**
 <p align="center">
-  <img src=out/art/missing_features.png width="500">
+  <img src=out/art/missing_features.png width="700">
 </p>
 
 After fitting the models, these are the results: a surprisingly high 0.61 R-squared on the out-of-sample performance. The Relative model plays a major role in this result: Karsten's ratings can be defined as a function of the global public rating. 
@@ -69,8 +69,8 @@ Here are the SHAP values graph of the Absolute and Delta models [Figure 3]. We o
 
 **Figure 3: SHAP values for Absolute and Delta models on Karsten's Rated Movies**
 <p align="center">
-  <img src=out/art/SHAPabsolute.png width="300">
-  <img src=out/art/SHAPdelta.png width="300">
+  <img src=out/art/SHAPabsolute.png width="500">
+  <img src=out/art/SHAPdelta.png width="500">
 </p>
 
 
@@ -91,15 +91,14 @@ user_dir_avg   : 1.20                                  avg_rating: 3.64
 
 **Figure 5: SHAP Dependence for Absolute Model Major Feature**
 <p align="center">
-  <img src=out/art/Absolute_avg_rating_SHAP_dependence.svg width="225">
-  <img src=out/art/Absolute_like_view_ratio_SHAP_dependence.svg width="225">
-  <img src=out/art/Absolute_rating_skew_SHAP_dependence.svg width="225">
+  <img src=out/art/Absolute_avg_rating_SHAP_dependence.svg width="400">
+  <img src=out/art/Absolute_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
 **Figure 6: SHAP Dependence for Delta Model Major Feature**
 <p align="center">
-  <img src=out/art/Delta_like_view_ratio_SHAP_dependence.svg width="250">
-  <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="250">
+  <img src=out/art/Delta_like_view_ratio_SHAP_dependence.svg width="400">
+  <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
 For model accuracy, we can look at the minimum and maximum difference between obsered and estimated values in Figure 7. On the right are those for which our forecast was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous ratings for similar films according to our model. Repartition of observed and estimated ratings can be found in Figure 8 and 9. We notice that our model manages to be extremely pessimistic for certain movies (bad notes are rare compared to high, the dataset ratings have a -0.95 skewness) but isn't optimistic enough for "good" movies.
@@ -132,12 +131,12 @@ Run Lola Run                   -0.040         Green Book                     +1.
 
 **Figure 8: Estimated vs Observed Ratings**
 <p align="center">
-  <img src=out/art/ObservedEstimated.svg width="600">
+  <img src=out/art/ObservedEstimated.svg width="800">
 </p>
 
 **Figure 9: Observed vs Estimated Ratings**
 <p align="center">
-  <img src=out/art/ObservedEstimated2.svg width="600">
+  <img src=out/art/ObservedEstimated2.svg width="800">
 </p>
 
 Finally, Figure 10 underlines that Karsten out of the 527 movies in his watchlist, can pick between No Half Measures (2013), Come and See (1985), A Britghter Summer Day (1991), The Cranes Are Flying (1957), Nobody Knows (2004), The Ascent (1977), Fanny and Alexandre (1982), As I Was Moving Ahead (2000), Sansho the Bailiff (1954) or The Tatami Galaxy (2010) if he wants to ensure an agreable evening. On the other hand, he should imperatively remove Crocodile Dundee in Los Angeles (2001) (how did this one ended up here?), Dolittle (2020), The Birth of a Nation (1915), Ed (1996), Space Chimps (2008), Nature in the Wrong (1933), Bum Voyage (1934), Sealskins (1932), Quiver (2018) and Monkey in the Middle (2014) from his watchlist - there were probably missclicks according to what he usually likes to watch. In reality, he should watch them anyways: bad notes improve the model understanding of what makes a good(bad) movie for the user.
