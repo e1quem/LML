@@ -1,0 +1,127 @@
+LML % python3 ML_stack.py
+Pseudo: Kurstboy
+Training 3 CatBoost models (1. Absolute, 2. Delta, 3. Like)...
+
+
+         Observed   Estimated
+count  445.000000  445.000000
+mean     3.561798    3.561798
+std      1.066537    0.831410
+min      0.500000    0.445751
+25%      3.000000    3.116830
+50%      4.000000    3.797880
+75%      4.500000    4.171409
+max      5.000000    5.007117
+
+
+Mean error: 0.5115 points.
+R2 : 0.6116
+
+Model weights
+Absolute: 0.1115
+Relative: 0.9514
+Like    : -0.2481
+
+
+Feature importance for Absolute model (y):
+rating_skew: 27.61
+like_view_ratio: 22.43
+avg_rating: 19.99
+user_genre_avg: 7.17
+genre_1: 4.56
+actors: 4.38
+rating_std_dev: 3.89
+studios: 1.54
+producers: 1.45
+user_dir_avg: 1.20
+directors: 0.90
+primary_language: 0.65
+year: 0.60
+rating_ratio: 0.56
+country_1: 0.50
+fans: 0.47
+user_studio_avg: 0.43
+controversy: 0.38
+writer_1: 0.38
+duration_mins: 0.30
+likes: 0.17
+views: 0.17
+total_ratings: 0.15
+user_writer_avg: 0.11
+is_niche: 0.00
+
+Feature importance for Delta model (y):
+actors: 16.40
+rating_skew: 12.36
+like_view_ratio: 10.65
+user_genre_avg: 7.53
+rating_ratio: 6.39
+studios: 5.94
+rating_std_dev: 5.71
+genre_1: 5.01
+user_dir_avg: 4.65
+avg_rating: 3.64
+user_studio_avg: 3.61
+producers: 3.22
+controversy: 2.86
+directors: 2.21
+duration_mins: 1.82
+country_1: 1.65
+year: 1.37
+total_ratings: 1.03
+likes: 0.92
+primary_language: 0.90
+views: 0.85
+fans: 0.81
+user_writer_avg: 0.47
+writer_1: 0.00
+is_niche: 0.00
+
+
+min(Delta)                                    max(Delta)
+------------------------------------------------------------------------------------------
+Chinatown                      -0.007         21                             +2.352
+Stop Making Sense              +0.007         The Great Gatsby               +2.269
+Three Colours: Red             +0.010         Star Wars: The Last Jedi       -2.218
+Inside Out                     -0.011         Superman                       +1.930
+Who's That Knocking at My Door +0.012         The Unbearable Weight of Massi +1.867
+Icarus                         -0.013         Magic Mike XXL                 -1.751
+All About My Mother            +0.013         The Dead Don't Die             -1.730
+Glengarry Glen Ross            +0.015         Unfriended                     -1.708
+Chip 'n Dale: Rescue Rangers   +0.017         The Lego Movie 2: The Second P -1.694
+The Father                     -0.018         Set It Up                      +1.656
+Bonnie and Clyde               -0.019         The Chronicles of Narnia: Prin +1.645
+The Bride!                     -0.020         Barbie in A Mermaid Tale       +1.590
+Shrek the Third                +0.029         The Avengers                   +1.570
+Hostel: Part II                +0.032         Last Night in Soho             +1.555
+Double Indemnity               +0.032         Chicken Run                    +1.538
+FRED: The Movie                +0.033         Star Wars: The Rise of Skywalk -1.535
+Escape from the Planet of the  -0.036         King Kong                      -1.485
+Rosetta                        +0.037         Tag                            +1.484
+A Different Man                +0.040         Jesus 2                        +1.451
+Run Lola Run                   -0.040         Green Book                     +1.434
+
+
+                                                 title  Predicted_Rating  Like_Probability
+294  No Half Measures: Creating the Final Season of...          4.866810          0.976227
+87                                        Come and See          4.701222          0.978141
+7                                A Brighter Summer Day          4.698863          0.984462
+401                              The Cranes Are Flying          4.687806          0.984674
+296                                       Nobody Knows          4.667878          0.990452
+390                                         The Ascent          4.667034          0.991463
+138                                Fanny and Alexander          4.660918          0.980444
+32   As I Was Moving Ahead, Occasionally I Saw Brie...          4.658658          0.973705
+348                                 Sansho the Bailiff          4.642318          0.991500
+466                                  The Tatami Galaxy          4.635975          0.988743
+
+                               title  Predicted_Rating  Like_Probability
+95   Crocodile Dundee in Los Angeles          1.445554          0.107931
+115                         Dolittle          1.382716          0.138447
+392            The Birth of a Nation          1.369546          0.206615
+124                               Ed          1.118659          0.102769
+370                     Space Chimps          1.090422          0.060858
+289              Nature in the Wrong         -0.821767          0.922104
+69                        Bum Voyage         -1.309767          0.635985
+350                        Sealskins         -1.519846          0.565092
+335                           Quiver         -1.575070          0.326040
+271             Monkey in the Middle         -1.611937          0.189666
