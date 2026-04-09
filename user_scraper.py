@@ -12,7 +12,7 @@ force_ipv4()
 def scrape_letterboxd_user(pseudo):
     driver = get_driver()
     base_url = "https://letterboxd.com"
-    current_url = f"{base_url}/{pseudo}/films/"
+    current_url = f"{base_url}/{pseudo}/films/rated/.5-5/"
     films_urls = []
 
     try:

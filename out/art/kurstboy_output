@@ -78,7 +78,7 @@ writer_1: 0.00
 is_niche: 0.00
 
 
-min(Delta)                                    max(Delta)
+min(difference)                               max(difference)
 ------------------------------------------------------------------------------------------
 Chinatown                      -0.007         21                             +2.352
 Stop Making Sense              +0.007         The Great Gatsby               +2.269
