@@ -4,26 +4,26 @@
 
 # Letterboxd Machine Learning (LML)
 
-Don't know which movie to chose from your Letterboxd watchlist for tonight? Don't worry, use this machine learning repo to lose time artificially replicating your taste to pick the perfect statistical match! No passion, only numbers.
+Don't know which movie to choose from your Letterboxd watchlist for tonight? Don't worry, use this machine learning repo to artificially replicate your taste in order to pick the perfect statistical match! No passion, only numbers.
 
 **Disclaimer**: Movies have a lot of varied features. A machine learning model will struggle to learn on a small sample. To ensure good performance, consistent rating of 1000+ movies is recommended. In this example, we obtain high performances using [Karsten's Letterboxd profile](https://letterboxd.com/Kurstboy/) (2225 rated movies).
 
 ## I. Web-scraping
 
-We use *Selenium* and *Undedected ChromeDriver* to bypass Cloudfare detection in order to obtain a user's rated movies as well as the ratings and likes he assigned to them ('user_scraper.py').  We use the same method to obtain the titles and URLs of all movies contained in a user's watchlist ('watchlist_scraper.py').
+We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudfare detection in order to obtain a user's rated movies as well as the ratings and likes the user assigned to them ('user_scraper.py').  We use the same method to obtain all movies contained of a user's watchlist ('watchlist_scraper.py').
 
-'movie_scraper.py' uses each of these CSV files to load individual Letterboxd pages of these movies, collecting rating distribution, crew and other available metadata. For actors, we only take into account the five first ones: having too many actors doesn't improve performance. We also compute personalized metrics: rating standard deviation, ratios, etc. With only one browser, this is a time consuming process (~20min/1000 movies) that could be optimized using multiple workers, at the risk of triggering Cloudfare's firewall.
+'movie_scraper.py' uses each of these CSV files to load individual Letterboxd pages of these movies, collecting rating distribution, crew and other available metadata. For actors, we only take into account the first five: having too many actors does not improve model performance. We also compute personalized metrics: rating standard deviation, and specific ratios. With only one browser, this is a time-consuming process (~20min/1000 movies) that could be optimized using multiple workers, at the risk of triggering Cloudfare's firewall.
 
 ## II. Machine Learning Models
 
-We first compute custom features: global rating skewness of a movie, user average per genre, director, writer, actor, etc. For these user averages, we use a leave-one-out mechanism in order to avoid data-leakage and overfitting. We turn hierarchical textual values, such as director_1, _2 and _3, into "bag of words", in order to give more flexibility for the model to converge.
+We first engineer new features: global rating skewness of a movie, user average per genre, director, writer, actor, etc. For these user averages, we use a leave-one-out mechanism in order to avoid data-leakage and overfitting. We turn hierarchical textual values, such as director_1, _2 and _3, into "bag of words", in order to give more flexibility for the model to converge.
 
 We use a 80/20 data split for training and testing. After trial and error, we use multiple models at once, on different targets:
-1. The Asbolute model tries to find the precise user rating.
-2. The Delta model tries to define the delta between the average rating and the user rating.
-3. The Binary like model tries to define the odds of a movie being liked by the user.
+1. The Absolute model tries to find the precise user rating.
+2. The Delta model tries to define the difference between the average rating and the user rating.
+3. The Binary Like model tries to predict the probability of a movie being liked by the user.
 
-We use CatBoost instead of XGBoost because it performs better on small datasets such as rated movies lists. CatBoost model parameters, such as weight on extreme ratings (we tried an equally weighted version, an exponentially weighted version, but a hard coded strict weighting on extreme values performs better), learning rates, depth, loss function, iterations, are those that we found to perform the best on a general basis. Users are free to figure out what works best for their dataset. Notably, the Like weight needs to be adjusted according to the liked movies/total rated movies ratio of a dataset.
+We use CatBoost instead of XGBoost for its better performances on small, mixed-type tabular data such as rated movies lists. CatBoost model parameters, such as weight on extreme ratings (we tried an equally weighted version, an exponentially weighted version, but a hard coded strict weighting on extreme values performs better), learning rates, depth, loss function, iterations are those that we found to perform the best on a general basis. Users are free to figure out what works best for their datasets. Notably, the Like weight needs to be adjusted according to the liked movies/total rated movies ratio of a dataset.
 
 We use ridge stacking to combine the three models.
 
@@ -40,10 +40,10 @@ This heatmap [Figure 2] displays missing data in our dataset. We notice that no 
 
 **Figure 2: Karsten's Missing Features Heatmap**
 <p align="center">
-  <img src=out/art/missing_features.png width="700">
+  <img src=out/art/missing_features.png width="600">
 </p>
 
-After fitting the models, these are the results: a surprisingly high 0.61 R-squared on the out-of-sample performance. The Relative model plays a major role in this result: Karsten's ratings can be defined as a function of the global public rating. 
+After fitting the models, these are the results: a surprisingly high 0.61 R-squared on the out-of-sample performance. The Relative model plays a major role in this result: Karsten's ratings can be defined as some sort of f(global public ratings). 
 
 ```
          Observed   Estimated
@@ -69,8 +69,8 @@ Here are the SHAP values graph of the Absolute and Delta models [Figure 3]. We o
 
 **Figure 3: SHAP values for Absolute and Delta models on Karsten's Rated Movies**
 <p align="center">
-  <img src=out/art/SHAPabsolute.png width="500">
-  <img src=out/art/SHAPdelta.png width="500">
+  <img src=out/art/SHAPabsolute.png width="400">
+  <img src=out/art/SHAPdelta.png width="400">
 </p>
 
 
@@ -101,7 +101,7 @@ user_dir_avg   : 1.20                                  avg_rating: 3.64
   <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
-For model accuracy, we can look at the minimum and maximum difference between obsered and estimated values in Figure 7. On the right are those for which our forecast was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous ratings for similar films according to our model. Repartition of observed and estimated ratings can be found in Figure 8 and 9. We notice that our model manages to be extremely pessimistic for certain movies (bad notes are rare compared to high, the dataset ratings have a -0.95 skewness) but isn't optimistic enough for "good" movies.
+For model accuracy, we can look at the minimum and maximum difference between obsered and estimated values in Figure 7. On the right are those for which our prediction was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous ratings for similar films according to our model. Distribution of observed and estimated ratings can be found in Figure 8 and 9. We notice that our model manages to be extremely pessimistic for certain movies (bad notes are rare compared to high, the dataset ratings have a -0.95 skewness) but isn't optimistic enough for "good" movies.
 
 **Figure 7: Accuracy of 20 Best and Worse Estimations**
 ```
@@ -131,15 +131,17 @@ Run Lola Run                   -0.040         Green Book                     +1.
 
 **Figure 8: Estimated vs Observed Ratings**
 <p align="center">
-  <img src=out/art/ObservedEstimated.svg width="800">
+  <img src=out/art/ObservedEstimated.svg width="700">
 </p>
 
 **Figure 9: Observed vs Estimated Ratings**
 <p align="center">
-  <img src=out/art/ObservedEstimated2.svg width="800">
+  <img src=out/art/ObservedEstimated2.svg width="700">
 </p>
 
-Finally, Figure 10 underlines that Karsten out of the 527 movies in his watchlist, can pick between No Half Measures (2013), Come and See (1985), A Britghter Summer Day (1991), The Cranes Are Flying (1957), Nobody Knows (2004), The Ascent (1977), Fanny and Alexandre (1982), As I Was Moving Ahead (2000), Sansho the Bailiff (1954) or The Tatami Galaxy (2010) if he wants to ensure an agreable evening. On the other hand, he should imperatively remove Crocodile Dundee in Los Angeles (2001) (how did this one ended up here?), Dolittle (2020), The Birth of a Nation (1915), Ed (1996), Space Chimps (2008), Nature in the Wrong (1933), Bum Voyage (1934), Sealskins (1932), Quiver (2018) and Monkey in the Middle (2014) from his watchlist - there were probably missclicks according to what he usually likes to watch. In reality, he should watch them anyways: bad notes improve the model understanding of what makes a good(bad) movie for the user.
+Finally, Figure 10 underlines that Karsten out of the 527 movies in his watchlist, can pick between No Half Measures (2013), Come and See (1985), A Britghter Summer Day (1991), The Cranes Are Flying (1957), Nobody Knows (2004), The Ascent (1977), Fanny and Alexandre (1982), As I Was Moving Ahead (2000), Sansho the Bailiff (1954) or The Tatami Galaxy (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove Crocodile Dundee in Los Angeles (2001) (how did this one end up here?), Dolittle (2020), The Birth of a Nation (1915), Ed (1996), Space Chimps (2008), Nature in the Wrong (1933), Bum Voyage (1934), Sealskins (1932), Quiver (2018) and Monkey in the Middle (2014) from his watchlist - there were probably misclicks according to what he usually likes to watch. In reality, he should watch them anyways: bad notes improve the model understanding of what makes a good(bad) movie for the user.
+
+*Note: Negative predicted ratings for the "worst" movies are a byproduct of the unconstrained Ridge stacking; they should be interpreted as "strongest recommendations to avoid".*
 
 **Figure 10: Watchlist Analysis: Predicted Rating and Like Probability**
 ```
