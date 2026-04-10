@@ -414,7 +414,7 @@ poly_est = np.poly1d(coef_est)
 plt.plot(plot_df.index, poly_est(plot_df.index), color='grey',
          linestyle='--', linewidth=0.8, label='Regression Estimated')
 
-plt.title('Estimated vs Observed User Ratings')
+plt.title('Observed vs Estimated User Ratings')
 plt.xlabel('Movies')
 plt.ylabel('User Rating')
 plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.5)
