@@ -64,14 +64,14 @@ max      5.000000    4.851018
 
 Here are the SHAP values graph of the *Absolute* and *Delta* models **[Figure 3]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 4**, and SHAP dependence plots of top features are plotted in **Figure 5** and **Figure 6**.
 
-**Figure 3: SHAP values for Absolute and Delta models on Karsten's Rated Movies**
+**Figure 3: SHAP Values for Absolute and Delta Models on Karsten's Rated Movies**
 <p align="center">
   <img src=out/art/SHAPabsolute.png width="400">
   <img src=out/art/SHAPdelta.png width="400">
 </p>
 
 
-**Figure 4: Ten Major Feature Importance for Absolute and Delta Models**
+**Figure 4: Ten Major Features Importance for Absolute and Delta Models**
 ```
 Feature importance for Absolute model           Feature importance for Delta model
 rating_skew    : 27.61                          actors: 16.40
@@ -86,13 +86,13 @@ producers      : 1.45                           user_dir_avg: 4.65
 user_dir_avg   : 1.20                           avg_rating: 3.64
 ```
 
-**Figure 5: SHAP Dependence for Absolute Model Major Feature**
+**Figure 5: SHAP Dependence for Absolute Model Major Features**
 <p align="center">
   <img src=out/art/Absolute_avg_rating_SHAP_dependence.svg width="400">
   <img src=out/art/Absolute_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
-**Figure 6: SHAP Dependence for Delta Model Major Feature**
+**Figure 6: SHAP Dependence for Delta Model Major Features**
 <p align="center">
   <img src=out/art/Delta_like_view_ratio_SHAP_dependence.svg width="400">
   <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="400">
@@ -100,7 +100,7 @@ user_dir_avg   : 1.20                           avg_rating: 3.64
 
 For model accuracy, we focus on the minimum and maximum difference between observed and estimated values **[Figure 7]**. On the right are those for which our prediction was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous notes for similar films according to our model. When plotting the distribution of observed and estimated ratings **[Figure 8] [Figure 9]**, we notice that our model *1.* manages to be extremely pessimistic for certain movies, *2.* is overly optimistic for movies in the 1 to 3.5 range and *3.* isn't optimistic enough for "excellent" movies in the 4.5 to 5 range. This can be explained by the -0.95 skewness of Karsten's ratings: this user has a noticeable skew towards high ratings. The model hence manages to understand why this user really dislikes certains movies, but struggles to identify what distinguishes a 4.5/5 from a 5/5 movie.
 
-**Figure 7: Accuracy of 20 Best and WorsT Estimations**
+**Figure 7: Accuracy of 20 Best and Worst Estimations**
 ```
 min(difference)                               max(difference)
 ------------------------------------------------------------------------------------------
