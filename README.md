@@ -7,7 +7,7 @@ Your Letterboxd watchlist is too long? No idea of which movie to pick for tonigh
 
 ## Introduction
 
-[Letterboxd](https://letterboxd.com) is an online social network for movie enthusiasts. Users can keep track of movies they've seen and rate them, on a 0.5 to 5 stars scale (0.5 granularity), with the option to "like" a movie: a binary independent variable. When a user adds any movie to its top-four all-time favorites, he becomes a "fan" of said movie. Finally, users can save movies they want to see in their "watchlist". All of this data is transparent: rating distribution and user reviews are accessible to anyone.
+[Letterboxd](https://letterboxd.com) is an online social network for movie enthusiasts. Users can keep track of movies they've seen and rate them on a 0.5 to 5 stars scale with the option to "like" a movie: a binary independent variable. When a user adds any movie to its top-four all-time favorites, he becomes a "fan" of said movie. Finally, users can save movies they want to see in their "watchlist". All of this data is transparent: rating distribution and user reviews are accessible to anyone.
 
 **Disclaimer**: Rated movies have a lot of varied features. On a small sample, this algorithm will struggle to learn anything different than the mean rating. To ensure good performance and algorithmic confidence for high and low ratings, a profile with consistent ratings of 1000+ movies is recommended. In this example, we obtain high performances using [Karsten's Letterboxd profile](https://letterboxd.com/Kurstboy/) (2225 rated movies).
 
