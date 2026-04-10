@@ -48,8 +48,9 @@ This heatmap **[Figure 2]** displays missing data in our dataset. We notice that
   <img src=out/art/missing_features.png width="600">
 </p>
 
-After fitting our models, these are the results of the stack: a 0.6014 out-of-sample R-squared with a 0.5218 mean error. Taking into account the granularity of the ratings, 31.24% of 445 out-of-sample ratings fall into the expected range: an acceptable result for a model trained on human sentiment-driven data. The *Relative model* has a 0.8582 weight in the stack: Karsten's ratings can be defined as some sort of $f(Global Public Ratings)$ function. 
+After fitting our models, these are the results of the stack **[Figure 3]**: a 0.6014 out-of-sample R-squared with a 0.5218 mean error. Taking into account the granularity of the ratings, 31.24% of 445 out-of-sample ratings fall into the expected range: an acceptable result for a model trained on human sentiment-driven data. The *Relative model* has a 0.8582 weight in the stack: Karsten's ratings can be defined as some sort of $f(Global Public Ratings)$ function. 
 
+**Figure 3: Out-of-sample Performance of Three Stacked Models (80/20 Data)**
 ```
          Observed   Estimated
 count  445.000000  445.000000          Mean error: 0.5218 points.
@@ -62,16 +63,16 @@ min      0.500000    0.529930          Model weights
 max      5.000000    4.851018 
 ```
 
-Here are the SHAP values graph of the *Absolute* and *Delta* models **[Figure 3]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 4**, and SHAP dependence plots of top features are plotted in **Figure 5** and **Figure 6**.
+Here are the SHAP values graph of the *Absolute* and *Delta* models **[Figure 4]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 5**, and SHAP dependence graphs of top features are plotted in **Figure 6** and **Figure 7**.
 
-**Figure 3: SHAP Values for Absolute and Delta Models on Karsten's Rated Movies**
+**Figure 4: SHAP Values for Absolute and Delta Models on Karsten's Rated Movies**
 <p align="center">
   <img src=out/art/SHAPabsolute.png width="400">
   <img src=out/art/SHAPdelta.png width="400">
 </p>
 
 
-**Figure 4: Ten Major Features Importance for Absolute and Delta Models**
+**Figure 5: Ten Major Features Importance for Absolute and Delta Models**
 ```
 Feature importance for Absolute model           Feature importance for Delta model
 rating_skew    : 27.61                          actors: 16.40
@@ -86,21 +87,21 @@ producers      : 1.45                           user_dir_avg: 4.65
 user_dir_avg   : 1.20                           avg_rating: 3.64
 ```
 
-**Figure 5: SHAP Dependence for Absolute Model Major Features**
+**Figure 6: SHAP Dependence for Absolute Model Major Features**
 <p align="center">
   <img src=out/art/Absolute_avg_rating_SHAP_dependence.svg width="400">
   <img src=out/art/Absolute_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
-**Figure 6: SHAP Dependence for Delta Model Major Features**
+**Figure 7: SHAP Dependence for Delta Model Major Features**
 <p align="center">
   <img src=out/art/Delta_like_view_ratio_SHAP_dependence.svg width="400">
   <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
-For model accuracy, we focus on the minimum and maximum difference between observed and estimated values **[Figure 7]**. On the right are those for which our prediction was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous notes for similar films according to our model. When plotting the distribution of observed and estimated ratings **[Figure 8] [Figure 9]**, we notice that our model *1.* manages to be extremely pessimistic for certain movies, *2.* is overly optimistic for movies in the 1 to 3.5 range and *3.* isn't optimistic enough for "excellent" movies in the 4.5 to 5 range. This can be explained by the -0.95 skewness of Karsten's ratings: this user has a noticeable skew towards high ratings. The model hence manages to understand why this user really dislikes certains movies, but struggles to identify what distinguishes a 4.5/5 from a 5/5 movie.
+For model accuracy, we focus on the minimum and maximum difference between observed and estimated values **[Figure 8]**. On the right are those for which our predictions were accurate; on the left are the movies for which Karsten's ratings are - according to our model - inconsistent with his previous notes for similar films. When plotting the distribution of observed and estimated ratings **[Figure 9] [Figure 10]**, we notice that our model *1.* manages to be extremely pessimistic for certain movies, *2.* is overly optimistic for movies in the 1 to 3.5 range and *3.* isn't optimistic enough for "excellent" movies in the 4.5 to 5 range. This can be explained by the -0.95 skewness of Karsten's ratings: this user has a noticeable bias towards high ratings. The model hence manages to understand why this user sometimes (rarely) really dislikes certains movies, but struggles to identify what distinguishes a 4.5/5 movie from one that is "worth" half a point more.
 
-**Figure 7: Accuracy of 20 Best and Worst Estimations**
+**Figure 8: Accuracy of 20 Best and Worst Estimations**
 ```
 min(difference)                               max(difference)
 ------------------------------------------------------------------------------------------
@@ -126,21 +127,21 @@ A Different Man                +0.040         Jesus 2                        +1.
 Run Lola Run                   -0.040         Green Book                     +1.434
 ```
 
-**Figure 8: Estimated vs Observed Ratings**
+**Figure 9: Estimated vs Observed Ratings**
 <p align="center">
   <img src=out/art/ObservedEstimated.svg width="700">
 </p>
 
-**Figure 9: Observed vs Estimated Ratings**
+**Figure 10: Observed vs Estimated Ratings**
 <p align="center">
   <img src=out/art/ObservedEstimated2.svg width="700">
 </p>
 
-Finally, the crucial answer. Out of the 527 movies listed in Karsten's watchlist, he can pick between *No Half Measures* (2013), *Come and See* (1985), *A Brighter Summer Day* (1991), *The Cranes Are Flying* (1957), *Nobody Knows* (2004), *The Ascent* (1977), *Fanny and Alexandre* (1982), *As I Was Moving Ahead* (2000), *Sansho the Bailiff* (1954) or *The Tatami Galaxy* (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove *Crocodile Dundee in Los Angeles* (2001), *Dolittle* (2020), *The Birth of a Nation* (1915), *Ed* (1996), *Space Chimps* (2008), *Nature in the Wrong* (1933), *Bum Voyage* (1934), *Sealskins* (1932), *Quiver* (2018) and *Monkey in the Middle* (2014) from his watchlist - these were probably misclicks according to what he usually likes to watch **[Figure 10]**. However, he should watch them if his goal is to improve the performances of our algorithm: his ratings on these movies will further help our models to understand what features makes a good(bad) movie according to this user.
+Finally, the crucial answer. Out of the 527 movies listed in Karsten's watchlist, he can pick between *No Half Measures* (2013), *Come and See* (1985), *A Brighter Summer Day* (1991), *The Cranes Are Flying* (1957), *Nobody Knows* (2004), *The Ascent* (1977), *Fanny and Alexandre* (1982), *As I Was Moving Ahead* (2000), *Sansho the Bailiff* (1954) or *The Tatami Galaxy* (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove *Crocodile Dundee in Los Angeles* (2001), *Dolittle* (2020), *The Birth of a Nation* (1915), *Ed* (1996), *Space Chimps* (2008), *Nature in the Wrong* (1933), *Bum Voyage* (1934), *Sealskins* (1932), *Quiver* (2018) and *Monkey in the Middle* (2014) from his watchlist - these were probably misclicks according to what he usually likes to watch **[Figure 11]**. However, he should watch them if his goal is to improve the performances of our algorithm: his ratings on these movies will further help our models to understand what features makes a good(bad) movie according to this user.
 
 *Note: Negative predicted ratings for the "worst" movies are domain violations, a byproduct of the unconstrained Ridge stacking and the important weight of the Delta model; they should be interpreted as "strongest recommendations to avoid" and they concern only 5 out of 527 movies.*
 
-**Figure 10: Watchlist Analysis: Predicted Rating and Like Probability**
+**Figure 11: Watchlist Analysis: Predicted Rating and Like Probability**
 ```
                                title  Predicted_Rating  Like_Probability
 294  No Half Measures: Creating t...          4.866810          0.976227
