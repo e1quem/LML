@@ -7,15 +7,15 @@ Your Letterboxd watchlist is too long? No idea which movie to pick for tonight? 
 
 ## Introduction
 
-Letterboxd is an online social network for movie enthusiasts. Users can keep track of movies they've seen and rate them, on a 0.5 to 5 stars scale (0.5 granularity), with the option to "like" a movie: a binary independent variable. When a user adds any movie to its top-four all-time favorites, he becomes a "fan" of said movie. Finally, users can save movies they want to see in their "watchlist". All of this data is transparent: rating distribution and user reviews are accessible to anyone.
+[Letterboxd](https://letterboxd.com) is an online social network for movie enthusiasts. Users can keep track of movies they've seen and rate them, on a 0.5 to 5 stars scale (0.5 granularity), with the option to "like" a movie: a binary independent variable. When a user adds any movie to its top-four all-time favorites, he becomes a "fan" of said movie. Finally, users can save movies they want to see in their "watchlist". All of this data is transparent: rating distribution and user reviews are accessible to anyone.
 
 **Disclaimer**: Rated movies have a lot of varied features. On a small sample, this algorithm will struggle to learn anything different than the mean rating. To ensure good performance and algorithmic confidence for high and low ratings, a profile with consistent ratings of 1000+ movies is recommended. In this example, we obtain high performances using [Karsten's Letterboxd profile](https://letterboxd.com/Kurstboy/) (2225 rated movies).
 
 ## I. Web-scraping
 
-We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudflare detection in order to scrape all movies, ratings, likes and watchlist of any profile (`user_scraper.py`).
+We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudflare detection in order to scrape all movies, ratings, likes and watchlist of a given profile (`user_scraper.py`).
 
-`movie_scraper.py` uses these CSV files to load individual Letterboxd pages of these movies in a Chrome browser, collecting rating distribution, crew and all available metadata. For actors, we only fetch the first five: having too many does not improve model performance. We also compute personalized metrics, such as rating standard deviation, like-to-view ratio and other specific ratios. This is the most time-consuming step since we made the choice to use only one browser (~20min/1000 movies). This could be optimized using multiple workers - at the risk of triggering Cloudflare's firewall. For testing purposes, you can use Kursten's data that is preloaded in the `/out` folder.
+`movie_scraper.py` uses these CSV files to load individual Letterboxd movie pages in a Chrome browser, collecting rating distribution, crew and all available metadata. For actors, we only fetch the first five: having too many does not improve model performance. We also compute personalized metrics, such as rating standard deviation, like-to-view ratio and other ratios. With only one active browser, this is the most time-consuming step (~20min/1000 movies). This could be optimized using multiple workers - at the risk of triggering Cloudflare's firewall. For testing purposes, you can find Kursten's preloaded data in the `/out` folder.
 
 *Note: While we could use TMDB API to quickly fetch movies metadata, we would still need to scrape Letterboxd to obtain the ratings and likes given by users of the platform. This is why we obtain all metadata from Letterboxd: it's not the most efficient way, but it's mandatory to go through it.* 
 
@@ -34,14 +34,14 @@ We use CatBoost instead of XGBoost for its improved performances on small, mixed
 
 ## III. Karsten's Example
 
-With 3955.2 hours of watchtime, this famous profile is a perfect case study. Using `overview.py`, we obtain a brief visual analysis of his movie-watching habits [Figure 1].
+With 3955.2 hours of watchtime, this famous profile is a perfect case study. Using `overview.py`, we obtain a brief visual analysis of his movie-watching habits **[Figure 1]**.
 
 **Figure 1: Karsten's Rated Movies Overview**
 <p align="center">
   <img src=out/art/overview.svg width="1000">
 </p>
 
-This heatmap [Figure 2] displays missing data in our dataset. We notice that no crucial data, such as `avg_rating`, is missing. In fact, Letterboxd doesn't compute this metric for low-activity movies: we had to manually calculate the weighted average for these few films with fewer ratings to obtain an exploitable dataset. Data cleaning is as always a crucial step; this graph allows us to spot missing features that need to be manually obtained.
+This heatmap **[Figure 2]** displays missing data in our dataset. We notice that no crucial data, such as `avg_rating`, is missing. In fact, Letterboxd doesn't compute this metric for low-activity movies: we had to manually calculate the weighted average for these few films with fewer ratings to obtain an exploitable dataset. Data cleaning is as always a crucial step; this graph allows us to spot missing features that need to be manually obtained.
 
 **Figure 2: Karsten's Missing Features Heatmap**
 <p align="center">
@@ -62,7 +62,7 @@ min      0.500000    0.529930          Model weights
 max      5.000000    4.851018 
 ```
 
-Here are the SHAP values graph of the Absolute and Delta models [Figure 3]. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in Figure 4, and SHAP dependence plots of top features are plotted in Figure 5 and Figure 6.
+Here are the SHAP values graph of the Absolute and Delta models **[Figure 3]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 4**, and SHAP dependence plots of top features are plotted in **Figure 5** and **Figure 6**.
 
 **Figure 3: SHAP values for Absolute and Delta models on Karsten's Rated Movies**
 <p align="center">
@@ -98,7 +98,7 @@ user_dir_avg   : 1.20                           avg_rating: 3.64
   <img src=out/art/Delta_rating_skew_SHAP_dependence.svg width="400">
 </p>
 
-For model accuracy, we focus on the minimum and maximum difference between observed and estimated values [Figure 7]. On the right are those for which our prediction was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous notes for similar films according to our model. When plotting the distribution of observed and estimated ratings [Figure 8, Figure 9], we notice that our model *1.* manages to be extremely pessimistic for certain movies, *2.* is overly optimistic for movies in the 1 to 3.5 range and *3.* isn't optimistic enough for "excellent" movies in the 4.5 to 5 range. This can be explained by the -0.95 skewness of Karsten's ratings: this user has a noticeable skew towards high ratings. The model hence manages to understand why this user really dislikes certains movies, but struggles to identify what distinguishes a 4.5/5 from a 5/5 movie.
+For model accuracy, we focus on the minimum and maximum difference between observed and estimated values **[Figure 7]**. On the right are those for which our prediction was accurate; on the left are the movies for which Karsten's rating is inconsistent with his previous notes for similar films according to our model. When plotting the distribution of observed and estimated ratings **[Figure 8] [Figure 9]**, we notice that our model *1.* manages to be extremely pessimistic for certain movies, *2.* is overly optimistic for movies in the 1 to 3.5 range and *3.* isn't optimistic enough for "excellent" movies in the 4.5 to 5 range. This can be explained by the -0.95 skewness of Karsten's ratings: this user has a noticeable skew towards high ratings. The model hence manages to understand why this user really dislikes certains movies, but struggles to identify what distinguishes a 4.5/5 from a 5/5 movie.
 
 **Figure 7: Accuracy of 20 Best and WorsT Estimations**
 ```
@@ -136,7 +136,7 @@ Run Lola Run                   -0.040         Green Book                     +1.
   <img src=out/art/ObservedEstimated2.svg width="700">
 </p>
 
-Finally, the crucial answer. Out of the 527 movies listed in Karsten's watchlist, he can pick between *No Half Measures* (2013), *Come and See* (1985), *A Brighter Summer Day* (1991), *The Cranes Are Flying* (1957), *Nobody Knows* (2004), *The Ascent* (1977), *Fanny and Alexandre* (1982), *As I Was Moving Ahead* (2000), *Sansho the Bailiff* (1954) or *The Tatami Galaxy* (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove *Crocodile Dundee in Los Angeles* (2001), *Dolittle* (2020), *The Birth of a Nation* (1915), *Ed* (1996), *Space Chimps* (2008), *Nature in the Wrong* (1933), *Bum Voyage* (1934), *Sealskins* (1932), *Quiver* (2018) and *Monkey in the Middle* (2014) from his watchlist - these were probably misclicks according to what he usually likes to watch [Figure 10]. He should however watch them if his goal is to improve the performances of our algorithm: his ratings on these movies will further help our models to understand what features makes a good(bad) movie according to this user.
+Finally, the crucial answer. Out of the 527 movies listed in Karsten's watchlist, he can pick between *No Half Measures* (2013), *Come and See* (1985), *A Brighter Summer Day* (1991), *The Cranes Are Flying* (1957), *Nobody Knows* (2004), *The Ascent* (1977), *Fanny and Alexandre* (1982), *As I Was Moving Ahead* (2000), *Sansho the Bailiff* (1954) or *The Tatami Galaxy* (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove *Crocodile Dundee in Los Angeles* (2001), *Dolittle* (2020), *The Birth of a Nation* (1915), *Ed* (1996), *Space Chimps* (2008), *Nature in the Wrong* (1933), *Bum Voyage* (1934), *Sealskins* (1932), *Quiver* (2018) and *Monkey in the Middle* (2014) from his watchlist - these were probably misclicks according to what he usually likes to watch **[Figure 10]**. He should however watch them if his goal is to improve the performances of our algorithm: his ratings on these movies will further help our models to understand what features makes a good(bad) movie according to this user.
 
 *Note: Negative predicted ratings for the "worst" movies are domain violations, a byproduct of the unconstrained Ridge stacking and the important weight of the Delta model; they should be interpreted as "strongest recommendations to avoid" and they concern only 5 out of 527 movies.*
 
