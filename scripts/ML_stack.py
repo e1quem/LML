@@ -259,6 +259,19 @@ print(f"Absolute: {meta_model.coef_[0]:.4f}")
 print(f"Relative: {meta_model.coef_[1]:.4f}")
 print(f"Like    : {meta_model.coef_[2]:.4f}\n")
 
+# Clipping for hits and misses
+rounded_preds = np.round(final_preds * 2) / 2
+rounded_preds = np.clip(rounded_preds, 0.5, 5.0)
+
+hits = np.sum(rounded_preds == y_holdout_abs.values)
+total = len(y_holdout_abs)
+misses = total - hits
+hit_rate = (hits / total) * 100
+
+print(f"Hits: {hits}")
+print(f"Misses: {misses}")
+print(f"Hit Percentage: {hit_rate:.2f}%")
+
 
 ## Visualisation of results
 # Feature importance print
