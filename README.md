@@ -3,7 +3,7 @@
 
 # Letterboxd Machine Learning (LML)
 
-Your Letterboxd watchlist is too long? No idea which movie to pick for tonight? Don't worry, use this machine learning algorithm to artificially replicate your cinematographic taste in order to pick the perfect statistical match! No passion, only numbers.
+Your Letterboxd watchlist is too long? No idea of which movie to pick for tonight? Don't worry, use this machine learning algorithm to artificially replicate your cinematographic taste in order to choose the perfect statistical match! No passion, only numbers.
 
 ## Introduction
 
