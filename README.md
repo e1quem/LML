@@ -62,7 +62,7 @@ min      0.500000    0.529930          Model weights
 max      5.000000    4.851018 
 ```
 
-Here are the SHAP values graph of the Absolute and Delta models **[Figure 3]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 4**, and SHAP dependence plots of top features are plotted in **Figure 5** and **Figure 6**.
+Here are the SHAP values graph of the *Absolute* and *Delta* models **[Figure 3]**. We observe that public ratings, movie genre and director dynamics play an important role in defining this user's preferences. Precise weights can be found in **Figure 4**, and SHAP dependence plots of top features are plotted in **Figure 5** and **Figure 6**.
 
 **Figure 3: SHAP values for Absolute and Delta models on Karsten's Rated Movies**
 <p align="center">
