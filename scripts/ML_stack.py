@@ -322,19 +322,26 @@ for model, pool, label in models_to_plot:
 
 # Observed vs Estimated plot
 plot_df = pd.DataFrame({
-    'Observed': y_holdout_abs.values,
-    'Estimated': final_preds
+    'Observed': y_holdout_abs.values,'Estimated': final_preds
 }).sort_values(by='Observed').reset_index(drop=True)
 plt.figure(figsize=(12, 6))
 
+y_min = np.where(plot_df['Observed'] == 0.5, 0, plot_df['Observed'] - 0.25)
+y_max = plot_df['Observed'] + 0.25
+
+heights = y_max - y_min
+plt.bar(x=plot_df.index, height=heights, bottom=y_min, width=1.0,
+        color='lightgrey', alpha=0.5, edgecolor='none', zorder=0, 
+        label='Tolerance Zone')
+
 sns.scatterplot(
     x=plot_df.index, y=plot_df['Observed'],
-    label='Observed', color='black', s=40,
-    edgecolor='black', zorder=3, alpha=1)
+    label='Observed', color='grey', s=40,
+    edgecolor='dimgrey', zorder=3, alpha=1)
 
 sns.scatterplot(
     x=plot_df.index, y=plot_df['Estimated'],
-    label='Estimated', color='grey', s=40,
+    label='Estimated', color='lightgrey', s=40,
     edgecolor='grey', zorder=2, alpha=1)
 
 plt.vlines(
@@ -351,7 +358,7 @@ plt.plot(plot_df.index, poly_obs(plot_df.index), color='black',
 coef_est = np.polyfit(plot_df.index, plot_df['Estimated'], 1)
 poly_est = np.poly1d(coef_est)
 plt.plot(plot_df.index, poly_est(plot_df.index), color='grey',
-         linestyle=':', linewidth=0.8, label='Regression Estimated')
+         linestyle='--', linewidth=0.8, label='Regression Estimated')
 
 plt.title('Estimated vs Observed User Ratings')
 plt.xlabel('Movies')
@@ -370,12 +377,12 @@ plt.figure(figsize=(12, 6))
 
 sns.scatterplot(
     x=plot_df.index, y=plot_df['Observed'],
-    label='Observed', color='black', s=40,
-    edgecolor='black', zorder=3, alpha=1)
+    label='Observed', color='grey', s=40,
+    edgecolor='dimgrey', zorder=3, alpha=1)
 
 sns.scatterplot(
     x=plot_df.index, y=plot_df['Estimated'],
-    label='Estimated', color='grey', s=40,
+    label='Estimated', color='lightgrey', s=40,
     edgecolor='grey', zorder=2, alpha=1)
 
 plt.vlines(
@@ -392,7 +399,7 @@ plt.plot(plot_df.index, poly_obs(plot_df.index), color='black',
 coef_est = np.polyfit(plot_df.index, plot_df['Estimated'], 1)
 poly_est = np.poly1d(coef_est)
 plt.plot(plot_df.index, poly_est(plot_df.index), color='grey',
-         linestyle=':', linewidth=0.8, label='Regression Estimated')
+         linestyle='--', linewidth=0.8, label='Regression Estimated')
 
 plt.title('Estimated vs Observed User Ratings')
 plt.xlabel('Movies')
