@@ -25,7 +25,7 @@ First, we engineer specific features: rating skewness, user average rating per g
 
 We tried multiple custom features, such as $Director + Writer$ or $Genre + Country$ combos, but such precise variables aren't optimal for small sample sizes. We discarded low-performing features, such as themes, technical crew, alternative titles and releases data. We do not use sentiment analysis of top-reviews, neither do we use keyword analysis of movie synopsis.
 
-We use a 80/20 data split for training and testing samples. After trial and error, we decided to use ridge stacking to combine the outputs of multiple machine learning models on different targets:
+We use a 80/20 data split for training and testing samples. After trial and error, we decided to use ridge stacking to combine the outputs of multiple machine learning models on different targets. This way, we do not have to select a single model, while the performance of stacking can - and does - outperform the prediction performance of each individual model.
 1. *Absolute model* finds the precise user rating (e.g. 3.562)
 2. *Delta model* defines the difference between the user rating and the average rating (e.g. +1.679)
 3. *Binary Like model* predicts the probability of a movie being liked by the user (e.g. 0.879)
