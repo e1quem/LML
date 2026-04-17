@@ -249,6 +249,7 @@ final_preds = meta_model.predict(holdout_meta_X)
 
 
 ######      RESULTS
+# Is cross-validation possible on small sample sizes like this? (1-3k movies)
 # Evaluation
 results = pd.DataFrame({
     'Observed': y_holdout_abs.values,
