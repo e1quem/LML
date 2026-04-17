@@ -1,7 +1,7 @@
+import undetected_chromedriver as uc
 import socket
 import math
 import re
-import undetected_chromedriver as uc
 
 # Network
 def force_ipv4():

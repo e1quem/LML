@@ -1,4 +1,3 @@
-
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 from scipy.stats import skew, kurtosis, normaltest
 import matplotlib.pyplot as plt
