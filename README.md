@@ -21,7 +21,7 @@ We use *Selenium* and *Undetected ChromeDriver* to bypass Cloudflare detection i
 
 ## II. Machine Learning Models
 
-First, we engineer specific features: rating skewness, user average rating per genre/director/writer/actor, niche factor for movies with less than 500 reviews, and a controversy indicator ($RatingSD \times TotalRatings$). For large numbers (views, likes, fans, ratings), we use a log-scale to improve model's performance. For user averages, we use a leave-one-out (LOO) mechanism in order to avoid data-leakage and overfitting. For hierarchical textual values, such as `director_1`, `director_2` and `director_3`, we discard the ranking by turning them into "bag of words" to give more flexibility to the model.
+In ```ML_stack.py```, we first engineer specific features: rating skewness, user average rating per genre/director/writer/actor, niche factor for movies with less than 500 reviews, and a controversy indicator ($RatingSD \times TotalRatings$). For large numbers (views, likes, fans, ratings), we use a log-scale to improve model's performance. For user averages, we use a leave-one-out (LOO) mechanism in order to avoid data-leakage and overfitting. For hierarchical textual values, such as `director_1`, `director_2` and `director_3`, we discard the ranking by turning them into "bag of words" to give more flexibility to the model.
 
 We tried multiple custom features, such as $Director + Writer$ or $Genre + Country$ combos, but such precise variables aren't optimal for small sample sizes. We discarded low-performing features, such as themes, technical crew, alternative titles and releases data. We do not use sentiment analysis of top-reviews, neither do we use keyword analysis of movie synopsis.
 
