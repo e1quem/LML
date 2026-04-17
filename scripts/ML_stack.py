@@ -29,7 +29,7 @@ df = pd.read_csv(f'out/enriched_movies_' + name +'.csv', sep=None, engine='pytho
 # Niche, log, controversy, age
 df['is_niche'] = np.where(df['total_ratings'] > 500, 0, 1)
 for col in ['views', 'likes', 'fans', 'total_ratings']:
-    df[col] = np.log1p(df[col])
+    df[col] = np.log1p(df[col])   #### Instead of log, should we use min-max scaling?
 df['controversy'] = df['rating_std_dev'] * df['total_ratings']
 df['year'] = 2026 - df['year']
 
