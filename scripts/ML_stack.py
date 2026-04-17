@@ -25,7 +25,7 @@ class CatBoostTqdmCallback:
 name = input("Pseudo: ")
 df = pd.read_csv(f'out/enriched_movies_' + name +'.csv', sep=None, engine='python')
 
-# FEATURES ENGINEERING
+######      FEATURES ENGINEERING
 # Niche, log, controversy, age
 df['is_niche'] = np.where(df['total_ratings'] > 500, 0, 1)
 for col in ['views', 'likes', 'fans', 'total_ratings']:
@@ -60,8 +60,9 @@ df = df.drop(columns=[
 df_trainval, df_holdout = train_test_split(df, test_size=0.2, random_state=42)
 # Keep ~60% for base training and 20% for stacking-aware meta-training
 df_train, df_stack = train_test_split(df_trainval, test_size=0.25, random_state=42)
+#### Maybe this sampling method isn't good enough 
 
-# Defining average per thematics, with a leave-one-out mechanism to avoid overfitting
+# Defining user average per thematics, with a leave-one-out mechanism to avoid overfitting
 def target_encode_strict(train_df, test_df, cols, target):
     melted = train_df.melt(id_vars=[target], value_vars=cols).dropna()
     melted = melted[melted['value'] != '']
@@ -93,7 +94,7 @@ for cols in [
     df_train[column_name], df_stack[column_name] = target_encode_strict(df_train, df_stack, enc_cols, 'user_rating')
     _, df_holdout[column_name] = target_encode_strict(df_train, df_holdout, enc_cols, 'user_rating')
 
-# Fusioning textual groups, so that actor_1 and actor_5 both count equally as "actors"
+# Fusioning textual groups, so that actor_1 and actor_5 both count equally as "actors", with no hierarchy
 groups = {
     'actors': [f'actor_{i}' for i in range(1, 6)],
     'studios': [f'studio_{i}' for i in range(1, 3)],
@@ -122,8 +123,9 @@ df_stack = process_text(df_stack)
 df_holdout = process_text(df_holdout)
 
 
+######      MODELS
 # Defining Catboost matrix
-# We define 3 targets for ou models: absolute, delta and binary (like)
+# We define 3 targets for ou models: absolute rating, delta from the mean rating and binary (like/no like)
 y_train_abs = df_train['user_rating']
 y_holdout_abs = df_holdout['user_rating']
 y_stack_abs = df_stack['user_rating']
@@ -153,6 +155,7 @@ for dataset in (X_train, X_stack, X_holdout):
 # Respective weighting for each model
 # 20 when normally distributed
 # 40 when not a lot of extreme values
+# We tried adaptative weighting based on the distance to the mean, but it didn't perform better than a simple static weighting, we kept it simple
 weights_abs = y_train_abs.apply(lambda x: 20.0 if x <= 1.0 or x >= 4.5 else 1.0)
 weights_delta = y_train_delta.abs().apply(lambda x: 20.0 if x >= 1.5 else 1.0)
 
@@ -199,7 +202,7 @@ model_abs = CatBoostRegressor(
     iterations=iterations, 
     learning_rate=0.005, 
     depth=6, 
-    loss_function='MAE',
+    loss_function='MAE', # MAE performs better than RMSE
     verbose=0)
 model_abs.fit(pool_train_abs, callbacks=[cb_abs])
 
@@ -217,10 +220,10 @@ model_delta.fit(pool_train_delta, callbacks=[cb_delta])
 cb_like = CatBoostTqdmCallback(iterations)
 model_like = CatBoostClassifier(
     iterations=iterations,
-    class_weights=[1,2], # Probably need to change this depending on the user likes / total movies ratio
+    class_weights=[1,2], # Need to adapt this depending on the user likes / total movies ratio
     learning_rate=0.005,
     depth=6,
-    l2_leaf_reg=5, # Ajout test
+    l2_leaf_reg=5,
     #loss_function='Logloss',
     eval_metric='AUC', # F1
     verbose=0)
@@ -236,7 +239,7 @@ holdout_p_abs = model_abs.predict(pool_holdout)
 holdout_p_delta = model_delta.predict(pool_holdout) + X_holdout['avg_rating'].values
 holdout_p_like_prob = model_like.predict_proba(pool_holdout)[:, 1]
 
-# Stacking of the 3 models
+# Ridge stacking of the 3 models
 stack_meta_X = np.column_stack((stack_p_abs, stack_p_delta, stack_p_like_prob))
 holdout_meta_X = np.column_stack((holdout_p_abs, holdout_p_delta, holdout_p_like_prob))
 meta_model = Ridge(alpha=1.0)
@@ -244,6 +247,8 @@ meta_model.fit(stack_meta_X, y_stack_abs)
 
 final_preds = meta_model.predict(holdout_meta_X)
 
+
+######      RESULTS
 # Evaluation
 results = pd.DataFrame({
     'Observed': y_holdout_abs.values,
@@ -273,7 +278,7 @@ print(f"Misses: {misses}")
 print(f"Hit Percentage: {hit_rate:.2f}%")
 
 
-## Visualisation of results
+#######     VISUALISATION OF RESULTS
 # Feature importance print
 print("\nFeature importance for Absolute model (y):")
 feature_importance = model_abs.get_feature_importance()

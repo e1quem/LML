@@ -3,6 +3,7 @@ import math
 import re
 import undetected_chromedriver as uc
 
+# Network
 def force_ipv4():
     old_getaddrinfo = socket.getaddrinfo
     def new_getaddrinfo(*args, **kwargs):
@@ -10,6 +11,7 @@ def force_ipv4():
         return [r for r in responses if r[0] == socket.AF_INET]
     socket.getaddrinfo = new_getaddrinfo
 
+# UC settings. option --headless is caught by Cloudflare
 def get_driver():
     options = uc.ChromeOptions()
     options.add_argument('--no-sandbox')

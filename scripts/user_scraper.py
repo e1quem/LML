@@ -7,6 +7,7 @@ import pandas as pd
 import random
 import time
 
+# Network configuration, ipv6 functions poorly in China
 force_ipv4()
 
 def scrape_letterboxd_user(driver, pseudo):

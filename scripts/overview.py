@@ -15,7 +15,7 @@ print(f"Watchtime: {watchtime:.1f} hours")
 fig = plt.figure(figsize=(12, 6))
 gs = GridSpec(2, 2, figure=fig)
 
-# 1. Movies & likes per year (top left)
+# 1. Movies & likes per year
 ax_tl = fig.add_subplot(gs[0, 0])
 yearly_stats = df.groupby('year').agg(
     movie_count=('title', 'count'),
@@ -28,7 +28,7 @@ ax_tl.grid(True, linestyle='--', linewidth=0.5, alpha=0.5, zorder=0)
 ax_tl.legend(frameon=False)
 sns.despine(ax=ax_tl)
 
-# 2. Decade Average (top right)
+# 2. Decade Average 
 ax_tr = fig.add_subplot(gs[0, 1])
 df['decade'] = (df['year'] // 10) * 10
 decade_avg = df.groupby('decade')['user_rating'].mean().reset_index()
@@ -38,7 +38,7 @@ ax_tr.set_ylim(0, 5)
 ax_tr.grid(True, linestyle='--', linewidth=0.5, alpha=0.5, zorder=0)
 sns.despine(ax=ax_tr)
 
-# 3. Top per category (bottom left - nested grid)
+# 3. Top per category
 inner_gs = GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[1, 0])
 categories = ['country_1', 'genre_1']
 titles = ['Top Countries', 'Top Genres']
@@ -61,7 +61,7 @@ for i, cat in enumerate(categories):
     )
     ax_pie.set_title(titles[i])
 
-# 4. Rating repartition (bottom right)
+# 4. Rating repartition 
 ax_br = fig.add_subplot(gs[1, 1])
 ratings = df['user_rating'].dropna()
 n = len(ratings)

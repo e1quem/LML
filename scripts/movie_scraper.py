@@ -17,9 +17,9 @@ def extract_movie_details(driver, movie_data):
     
     try:
         WebDriverWait(driver, 5).until(
-            # presence of element located is not sufficient for smaller movies
-            # Possibility of other fix : EC.visibility_of_element_located
-            #EC.presence_of_element_located((By.CSS_SELECTOR, ".production-statistic-list, #film-page-wrapper")) 
+            # Presence of element located is not sufficient for smaller movies
+            # Other possible fix: EC.visibility_of_element_located
+            # EC.presence_of_element_located((By.CSS_SELECTOR, ".production-statistic-list, #film-page-wrapper")) 
             lambda d: d.find_element(By.CSS_SELECTOR, ".-watches .label").text.strip() != ""
         )
     except:
