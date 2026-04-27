@@ -211,7 +211,7 @@ def plot_observations_r2_mean_error(df: pd.DataFrame) -> Path:
     handles_right, labels_right = ax_right.get_legend_handles_labels()
     ax_left.legend(handles_left + handles_right, labels_left + labels_right, loc="upper right")
 
-    output_path = FIGURE_DIR / "performance_sample_size.pdf"
+    output_path = FIGURE_DIR / "performance_sample_size.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -279,7 +279,7 @@ def plot_std_diff_r2_hit_rate(df: pd.DataFrame) -> Path:
     handles_right, labels_right = ax_right.get_legend_handles_labels()
     ax_left.legend(handles_left + handles_right, labels_left + labels_right, loc="upper right")
 
-    output_path = FIGURE_DIR / "performance_std_diff.pdf"
+    output_path = FIGURE_DIR / "performance_std_diff.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -344,7 +344,7 @@ def plot_observations_hit_rates(df: pd.DataFrame) -> Path:
     ax.set_title("Hit rate by sample size", loc="left", pad=10, weight="bold")
     ax.legend(loc="upper right")
 
-    output_path = FIGURE_DIR / "hit_rates_by_sample_size.pdf"
+    output_path = FIGURE_DIR / "hit_rates_by_sample_size.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -390,7 +390,7 @@ def plot_like_f1_violin(df: pd.DataFrame) -> Path:
     ax.spines["right"].set_visible(False)
     ax.set_title("Distribution of F1 scores by threshold", loc="left", pad=10, weight="bold")
 
-    output_path = FIGURE_DIR / "distribution_F1.pdf"
+    output_path = FIGURE_DIR / "distribution_F1.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -486,7 +486,7 @@ def plot_user_distribution_metrics_vs_r2(obs_df: pd.DataFrame, perf_df: pd.DataF
         ax.spines["right"].set_visible(False)
         ax.yaxis.set_major_formatter(FuncFormatter(format_metric_ticks))
 
-    output_path = FIGURE_DIR / "user_distribution_metrics_vs_r2.pdf"
+    output_path = FIGURE_DIR / "user_distribution_metrics_vs_r2.svg"
     fig.suptitle("User rating distribution characteristics vs R²", x=0.02, y=0.995, ha="left", fontsize=12, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     fig.savefig(output_path)
@@ -527,7 +527,7 @@ def plot_parity_observed_predicted(df: pd.DataFrame) -> Path:
     ax.set_title("Parity plot: observed vs predicted ratings", loc="left", pad=10, weight="bold")
     ax.legend(loc="upper left")
 
-    output_path = FIGURE_DIR / "observations_parity_plot.pdf"
+    output_path = FIGURE_DIR / "observations_parity_plot.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -565,7 +565,7 @@ def plot_residuals_observed(df: pd.DataFrame) -> Path:
     ax.set_title("Residuals by observed rating", loc="left", pad=10, weight="bold")
     ax.legend(loc="upper left")
 
-    output_path = FIGURE_DIR / "observations_residuals_by_observed.pdf"
+    output_path = FIGURE_DIR / "observations_residuals_by_observed.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -600,7 +600,7 @@ def plot_residual_distribution(df: pd.DataFrame) -> Path:
     ax.set_title("Residual distribution", loc="left", pad=10, weight="bold")
     ax.legend(loc="upper right")
 
-    output_path = FIGURE_DIR / "observations_residual_distribution.pdf"
+    output_path = FIGURE_DIR / "observations_residual_distribution.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
@@ -634,7 +634,7 @@ def plot_observed_predicted_histogram(df: pd.DataFrame) -> Path:
     ax.spines["right"].set_visible(False)
     ax.set_title("Observed rating distribution", loc="left", pad=10, weight="bold")
 
-    output_path = FIGURE_DIR / "observations_observed_predicted_histogram.pdf"
+    output_path = FIGURE_DIR / "observations_observed_predicted_histogram.svg"
     fig.savefig(output_path)
     plt.close(fig)
     return output_path
