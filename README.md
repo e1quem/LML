@@ -18,27 +18,24 @@ Using web-scraping techniques on Letterboxd's 50 most popular users, we build a 
 
 ```scraper_iterate.py``` uses Selenium and Undetected ChromeDriver to bypass Cloudflare detection to scrape names, URLs, and respective ratings of all rated movies of a given user. When loading these URLs in an automated Chrome browser, we collect all relevant metadata available on Letterboxd pages:
 - **Film attributes**: ```title```, ```year```, ```duration_mins```, ```genre```, ```actors```, ```directors```, ```writer```, ```producers```, ```studios```, ```country```, ```primary_language```
-- **Platform metrics**: ```views```, ```likes```, ```fans```, ```avg_rating```, ```total_ratings```, ```rating_count``` per rating level
+- **Platform metrics**: ```views```, ```likes```, ```fans```, ```avg_rating```, ```total_ratings```, ```rating_count``` (per rating level)
 
-We also compute personalized metrics, such as: 
-- ```rating_std_dev```
-- ```rating_ratio``` (ratings to view ratio)
-- ```like_view_ratio``` (like-to-view ratio)
+We also compute personalized metrics, such as ```rating_std_dev```, ```rating_ratio``` (ratings to view ratio) and ```like_view_ratio``` (like-to-view ratio).
 
 We only fetch the first five actors and the main writer: having too many individuals doesn't improve model performance.
 
-With one active browser, metadata scraping is time-consuming (~1.3 sec/movie) since efficiency is limited by Cloudflare. While we could use TMDB's API to instantly fetch movie metadata, the slow Letterboxd scraping is mandatory to obtain ratings and likes given by users of the platform. To avoid scraping the same movie twice, we distinguish individual rating files per user from global movie metadata stored in the ```out/movies.csv``` file. The more users are added to the database, the fewer new movies need to be scraped. 
+With one active browser, metadata scraping is time-consuming (~1.3 sec/movie) since efficiency is limited by Cloudflare. While we could use TMDB's API to instantly fetch movie metadata, Letterboxd scraping is mandatory to obtain ratings and likes given by users of the platform. To avoid scraping the same movie twice, we distinguish individual rating files per user from global movie metadata stored in the ```out/movies.csv``` file. The more users are added to the database, the fewer new movies need to be scraped. 
 
-Our sample focuses on the [50 most popular Letterboxd users](https://letterboxd.com/members/popular/): official or amateur cinema critics, writers, podcasters, or influencers. Popularity is defined as the total amount of likes obtained by a user on its film reviews. Our sample has a combined count of 2,626,328 followers and 128,857 rated movies. Most of these movies overlap: our ```movies.csv``` contains 32,803 individual entries **[Figure 1]**.
+Our sample focuses on the [50 most popular Letterboxd users](https://letterboxd.com/members/popular/): they are official or amateur cinema critics, writers, podcasters, influencers. Popularity is defined by the platform as the total amount of likes obtained by a user on its film reviews. Our sample has a combined count of 2,626,328 followers and 128,857 rated movies. Most of these movies overlap: our ```movies.csv``` contains 32,803 individual entries **[Figure 1]**.
 
 **Figure 1: Sample characteristics**
 ```
 N=50 users, 127535 observations
 
-                           Total        Mean      Median         Std         Min         Max
-Rated movies             128,857    2577.140    2094.000    1850.418         313      10,168
-Observations             127,535    2550.700    2087.500    1820.317         312      10,086
-Followers              2,626,328   52526.560   29635.000   54900.525       2,854     245,138
+                            Total        Mean      Median         Std         Min         Max
+Rated movies              128,857    2577.140    2094.000    1850.418         313      10,168
+Observations (5-fold)     127,535    2550.700    2087.500    1820.317         312      10,086
+Followers               2,626,328   52526.560   29635.000   54900.525       2,854     245,138
 ```
 
 ## II. Machine Learning Models
@@ -49,9 +46,9 @@ In ```ML.py```, we first engineer custom features:
 - a binary "niche" factor for movies with less than 500 reviews
 - a controversy indicator ($RatingSD \times TotalRatings$).
 
-For user averages, we use a leave-one-out (LOO) mechanism to avoid data leakage. For large scale features (views, likes, fans, ratings), we use log-scaling. For hierarchical textual values, such as `director_1`, `director_2` and `director_3`, we discard ranking by turning them into "bag of words", giving more flexibility to the model. Custom features, such as $Director + Writer$ or $Genre + Country$ combos, are too scarce and not optimal for our sample scale. We discarded low-performing features (themes, technical crew, alternative titles, releases data). We do not use sentiment analysis of top-reviews, neither do we use keyword analysis of movie synopsis.
+For user averages, we use a leave-one-out mechanism to avoid data leakage. For large scale features (views, likes, fans, ratings), we use log-scaling. For hierarchical textual values, such as `director_1`, `director_2` and `director_3`, we discard ranking by turning them into "bag of words", giving more flexibility to the model. Custom features, such as $Director + Writer$ or $Genre + Country$ combos, are too scarce and not optimal for our sample scale. We discarded low-performing features (themes, technical crew, alternative titles, releases data). We do not use sentiment analysis of top-reviews, neither do we use keyword analysis of movie synopsis.
 
-We use an 80/20 split for training and testing samples stratified on ```user_like```, combined with a 5-fold cross-validation per user. We use We use Ridge stacking to combine the outputs of multiple ML models on different targets: stacking can, and does, outperform the prediction performance of each individual model.
+We use an 80/20 split for training and testing samples stratified on ```user_like```, combined with a 5-fold cross-validation per user. We use Ridge stacking to combine the outputs of three ML models trained on different targets: stacking can, and does, outperform the prediction performance of each individual model.
 1. **Absolute model** seeks the precise user rating (e.g. 3.562)
 2. **Delta model** defines the difference between the user rating and the average rating (e.g. +1.679)
 3. **Binary Like model** predicts the probability of a movie being liked by the user (e.g. 0.879)
@@ -60,7 +57,7 @@ We use CatBoost instead of XGBoost for its improved performance on small, mixed-
 
 ## III. Overall results
 
-To assess the performance of our model, we use user-weighted and observation-weighted averages **[Figure 2]**. Across 127,535 rating forecasts, we obtain an average 0.467 R² (above 0.40 for 66% of the sample and above 0.60 for 18% of the sample). Our hit rate - when the continuous prediction falls within the discrete rating increment - is relatively low at around 30%, and only surpasses 50% when allowing for a ±0.5 rating error. The ```std_diff``` variable measures the difference between the observed user-rating standard deviation and the predicted rating standard deviation. Our model is most often more conservative than observed ratings: a lower ```std_diff``` indicates more confidence in its predictions, while a high value denotes mean-reverting behavior. **Figure 3** precisely underlines this result, showing higher performance associated with a lower standard-deviation difference.
+To assess the performance of our model, we use user-weighted and observation-weighted averages **[Figure 2]**. Across 127,535 rating forecasts, we obtain a 0.467 R², above 0.40 and 0.60 for respectively 66% and 18% of the sample. Our hit rate, defined as when the continuous prediction falls within the discrete rating increment, is relatively low at around 30%, and only surpasses 50% when allowing for a ±0.5 rating error. The ```std_diff``` variable measures the difference between the observed user-rating standard deviation and the predicted rating standard deviation. Our model is most often more conservative than observed ratings, hence a lower ```std_diff``` indicates more confidence in its predictions, while a high value denotes mean-reverting behavior. **Figure 3** precisely underlines this result, showing higher performance associated with a lower standard-deviation difference.
 
 **Figure 2: Textual results**
 ```
@@ -125,7 +122,7 @@ With a violin parity plot **[Figure 6]**, we notice the positive trend in predic
   <img src=out/figures/observations_residual_distribution.svg width="350">
 </p>
 
-To assess the accuracy of our like model, which outputs a like likelihood between 0 and 1, we compute the F1 score of the model per user, with like thresholds varying from 0.99 to 0.90 **[Figure 9]**. Overall, our model obtains low F1 scores except for outliers, with noticeable improvement as the threshold is lowered.
+To assess the accuracy of our like model, which outputs a like likelihood between 0 and 1, we compute the F1 score of the model per user, with like thresholds varying from 0.99 to 0.90 **[Figure 9]**. Overall, our model obtains low F1 scores except for rare outliers, with a noticeable trend towards improvement as the like threshold is lowered.
 
 **Figure 9: Like model F1 per threshold**
 <p align="center">
