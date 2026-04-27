@@ -432,14 +432,14 @@ results_summary = pd.DataFrame({
 # Feature importance print
 print("\nFeature importance for Absolute model (y):")
 feature_importance = model_abs.get_feature_importance()
-for score, name in sorted(zip(feature_importance, X_train.columns), reverse=True):
-    print(f'{name}: {score:.2f}')
+for score, feature_name in sorted(zip(feature_importance, X_train.columns), reverse=True):
+    print(f'{feature_name}: {score:.2f}')
 
 # Feature importance print
 print("\nFeature importance for Delta model (y):")
 feature_importance = model_delta.get_feature_importance()
-for score, name in sorted(zip(feature_importance, X_train.columns), reverse=True):
-    print(f'{name}: {score:.2f}')
+for score, feature_name in sorted(zip(feature_importance, X_train.columns), reverse=True):
+    print(f'{feature_name}: {score:.2f}')
 
 # Missing data
 #fig = plt.figure(figsize=(12, 9))
@@ -571,11 +571,11 @@ ax.bar(x=plot_df.index, height=heights, bottom=y_min, width=1.0,
 
 ax.scatter(plot_df.index, plot_df['Observed'],
            label='Observed', color='0.08', s=40,
-           edgecolor='white', linewidth=0.5, zorder=3, alpha=1)
+           edgecolor='white', linewidth=0.1, zorder=3, alpha=1)
 
 ax.scatter(plot_df.index, plot_df['Estimated'],
            label='Estimated', color='0.55', s=40,
-           edgecolor='white', linewidth=0.5, zorder=2, alpha=1)
+           edgecolor='white', linewidth=0.1, zorder=2, alpha=1)
 
 ax.vlines(x=plot_df.index, ymin=plot_df['Observed'],
           ymax=plot_df['Estimated'], color='0.7',
@@ -620,11 +620,11 @@ fig2, ax2 = plt.subplots(figsize=(12, 6))
 
 ax2.scatter(plot_df2.index, plot_df2['Observed'],
             label='Observed', color='0.08', s=40,
-            edgecolor='white', linewidth=0.5, zorder=3, alpha=1)
+            edgecolors='white', linewidths=0.1, zorder=3, alpha=1)
 
 ax2.scatter(plot_df2.index, plot_df2['Estimated'],
             label='Estimated', color='0.55', s=40,
-            edgecolor='white', linewidth=0.5, zorder=2, alpha=1)
+            edgecolors='white', linewidths=0.1, zorder=2, alpha=1)
 
 ax2.vlines(x=plot_df2.index, ymin=plot_df2['Observed'],
            ymax=plot_df2['Estimated'], color='0.7',

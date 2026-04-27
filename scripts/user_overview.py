@@ -1,9 +1,11 @@
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+from matplotlib.ticker import FuncFormatter
 from scipy.stats import skew, kurtosis, normaltest
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import os
 
 
 def set_stata_like_style():
@@ -28,7 +30,18 @@ def set_stata_like_style():
 
 
 name = input("Pseudo: ")
-df = pd.read_csv(f'out/enriched_movies_' + name +'.csv', sep=None, engine='python')
+user_file = f'out/movies_{name}.csv'
+metadata_file = 'out/movies.csv'
+
+if not os.path.exists(user_file):
+    raise FileNotFoundError(f"File {user_file} not found o_O?")
+
+user_ratings = pd.read_csv(user_file, sep=None, engine='python')
+metadata = pd.read_csv(metadata_file, sep=None, engine='python')
+df = user_ratings.merge(metadata, on='url', how='left', suffixes=('_user', '_meta'))
+df.rename(columns={'title_user': 'title', 'year_meta': 'year', 'year_user': 'year_user'}, inplace=True)
+df['title'] = df['title'].fillna(df.get('title_meta'))
+df['year'] = pd.to_numeric(df['year'], errors='coerce')
 watchtime = df['duration_mins'].sum() / 60
 print(f"Watchtime: {watchtime:.1f} hours")
 
@@ -58,6 +71,7 @@ decade_avg = df.groupby('decade')['user_rating'].mean().reset_index()
 sns.barplot(data=decade_avg, x='decade', y='user_rating', zorder=2, color='0.55', edgecolor='0.15', width=1.0, linewidth=0.4, ax=ax_tr, saturation=1)
 ax_tr.set_title("Average Rating per Decade", loc="left", pad=10, weight="bold")
 ax_tr.set_ylim(0, 5)
+ax_tr.xaxis.set_major_formatter(FuncFormatter(lambda value, _pos: f"{int(value * 10)}"))
 ax_tr.grid(axis='y')
 ax_tr.grid(axis='x', visible=False)
 sns.despine(ax=ax_tr)
@@ -71,8 +85,8 @@ for i, cat in enumerate(categories):
     counts = df[cat].value_counts()
     
     n_colors = len(counts)
-    gray_range = np.linspace(0.25, 0.85, n_colors)
-    colors = plt.cm.Greys(gray_range[::-1])
+    gray_range = np.linspace(0.15, 0.55, n_colors)
+    colors = plt.cm.Greys(gray_range)
     labels = [n if j < 3 else "" for j, n in enumerate(counts.index)]
     
     ax_pie.pie(
@@ -80,6 +94,7 @@ for i, cat in enumerate(categories):
         labels=labels, 
         colors=colors,
         autopct=lambda p: '{:.1f}%'.format(p) if p > counts.iloc[2]/counts.sum()*100 else '',
+        textprops={'fontsize': 7, 'color': '0.2'},
         startangle=140,
         wedgeprops={'edgecolor': '0.15', 'linewidth': 0.4, 'antialiased': True}
     )
@@ -93,10 +108,16 @@ sk = skew(ratings)
 kt = kurtosis(ratings)
 stat, p = normaltest(ratings)
 sns.histplot(df['user_rating'], bins=10, alpha=1, zorder=2, color='0.55', edgecolor='0.15', linewidth=0.4, ax=ax_br)
-ax_br.set_title(
-    f"Ratings Distribution\n"
-    f"n={n}  |  skew={sk:.2f}  |  kurtosis={kt:.2f} |  normal p={p:.3f}"
-    , loc="left", pad=10, weight="bold"
+ax_br.set_title("Ratings Distribution", loc="left", pad=10, weight="bold")
+ax_br.text(
+    0.0,
+    0.96,
+    f"n={n}  |  skew={sk:.2f}  |  kurtosis={kt:.2f} |  normal p={p:.3f}",
+    transform=ax_br.transAxes,
+    ha="left",
+    va="bottom",
+    fontsize=8.5,
+    color="0.25",
 )
 ax_br.grid(axis='y')
 ax_br.grid(axis='x', visible=False)
