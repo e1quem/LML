@@ -138,7 +138,7 @@ With 3,976 hours of watchtime, the number one most popular Letterboxd user is a 
 
 **Figure 10: Karsten's rated movies overview**
 <p align="center">
-  <img src=out/art/overview_kurstboy.svg width="600">
+  <img src=out/art/overview_kurstboy.svg width="800">
 </p>
 
 **Figure 11: Karsten's numerical features correlation**
