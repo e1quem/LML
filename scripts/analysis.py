@@ -1,15 +1,13 @@
 from pathlib import Path
 import math
-
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import seaborn as sns
 import pandas as pd
 
 
-BASE_DIR = Path("/Users/eyquem/Desktop/LML/out")
-df_obs = pd.read_csv(BASE_DIR / "observations.csv", sep=";")
-df_perf = pd.read_csv(BASE_DIR / "performance.csv", sep=";")
+df_obs = pd.read_csv("out/observations.csv", sep=";")
+df_perf = pd.read_csv("out/performance.csv", sep=";")
 
 
 ## TEXTUAL ANALYSIS
