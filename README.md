@@ -87,7 +87,7 @@ std_diff                   0.323       0.303       0.105       0.176       0.582
 
 **Figure 3: Performance by standard deviation gap**
 <p align="center">
-  <img src=out/figures/performance_std_diff.svg width="800">
+  <img src=out/figures/performance_std_diff.svg width="600">
 </p>
 
 In **Figure 4**, we observe that neither performance nor hit rate increases with sample size, indicating that our model performance does not necessarily improve with scale, but relies on other factors, such as user rating style or consistency.
@@ -102,19 +102,19 @@ To test this hypothesis, we compare user rating-distribution metrics, such as sk
 
 **Figure 5: User rating distribution characteristics and performance**
 <p align="center">
-  <img src=out/figures/user_distribution_metrics_vs_r2.svg width="1000">
+  <img src=out/figures/user_distribution_metrics_vs_r2.svg width="600">
 </p>
 
 With a violin parity plot **[Figure 6]**, we notice the positive trend in predicted ratings, which consistently overestimates low ratings and underestimates high ratings, reflecting the behavior of a rather mean-reverting model. It is interesting to note the shorter tails for the 3.5 and 4.0 ratings, which are to be expected since these are among the most frequent ratings assigned by users in our sample **[Figure 7]**. It is however surprising to observe such large tails for the 3.0 ratings, which is the second most frequent rating in the dataset, and the rather short tails of the 4.5 rating, which is almost as frequent as the 2.5 and 5.0 ratings. This once again suggests that frequency does not rhyme with accuracy, but rather with rating type: "good" (3.5, 4.0) and "really good" (4.5) movies seem easier to predict than "excellent" (5.0) or "terrible" ones (0.5, 1.0, 1.5).
 
 **Figure 6: Violin parity plot**
 <p align="center">
-  <img src=out/figures/observations_parity_plot.svg width="1000">
+  <img src=out/figures/observations_parity_plot.svg width="600">
 </p>
 
 **Figure 7: Sample observed rating distribution**
 <p align="center">
-  <img src=out/figures/observations_observed_predicted_histogram.svg width="1000">
+  <img src=out/figures/observations_observed_predicted_histogram.svg width="600">
 </p>
 
 **Figure 8** further emphasizes this mean-reverting behavior of our model with a residual analysis that reflects our previous finding. Overall, the residual distribution is slightly negatively skewed.
@@ -129,7 +129,7 @@ To assess the accuracy of our like model, which outputs a like likelihood betwee
 
 **Figure 9: Like model F1 per threshold**
 <p align="center">
-  <img src=out/figures/distribution_F1.svg width="1000">
+  <img src=out/figures/distribution_F1.svg width="600">
 </p>
 
 ## IV. Karsten's Example
@@ -138,12 +138,12 @@ With 3,976h of watchtime, the number one most popular Letterboxd user is a perfe
 
 **Figure 10: Karsten's rated movies overview**
 <p align="center">
-  <img src=out/art/overview_kurstboy.svg width="1000">
+  <img src=out/art/overview_kurstboy.svg width="600">
 </p>
 
 **Figure 11: Karsten's numerical features correlation**
 <p align="center">
-  <img src=out/art/kurstboy_correlation_hm.png width="1000">
+  <img src=out/art/kurstboy_correlation_hm.png width="600">
 </p>
 
 **Figure 12** displays missing data in our dataset. We notice that no crucial data, such as `avg_rating`, is missing. In fact, Letterboxd does not compute this metric for low-activity movies: we had to manually calculate the weighted average for these films with fewer ratings to obtain an exploitable dataset. Data cleaning is, as always, a crucial step; this graph allows us to spot missing features that need to be manually obtained.
@@ -220,12 +220,12 @@ The Father                     -0.018         Set It Up                      +1.
 
 **Figure 17: Estimated vs observed ratings**
 <p align="center">
-  <img src=out/art/kurstboy_ObservedEstimated.svg width="700">
+  <img src=out/art/kurstboy_ObservedEstimated.svg width="600">
 </p>
 
 **Figure 18: Observed vs estimated ratings**
 <p align="center">
-  <img src=out/art/kurstboy_ObservedEstimated2.svg width="700">
+  <img src=out/art/kurstboy_ObservedEstimated2.svg width="600">
 </p>
 
 Finally, the crucial answer. Out of the 527 movies listed in Karsten's watchlist, he can pick between *No Half Measures* (2013), *Come and See* (1985), *A Brighter Summer Day* (1991), *The Cranes Are Flying* (1957), *Nobody Knows* (2004), *The Ascent* (1977), *Fanny and Alexandre* (1982), *As I Was Moving Ahead* (2000), *Sansho the Bailiff* (1954) or *The Tatami Galaxy* (2010) if he wants to ensure an agreeable evening. On the other hand, he should imperatively remove *Crocodile Dundee in Los Angeles* (2001), *Dolittle* (2020), *The Birth of a Nation* (1915), *Ed* (1996), *Space Chimps* (2008), *Nature in the Wrong* (1933), *Bum Voyage* (1934), *Sealskins* (1932), *Quiver* (2018) and *Monkey in the Middle* (2014) from his watchlist - these were probably misclicks according to what he usually likes to watch **[Figure 19]**. However, he should watch them if his goal is to improve the performance of our algorithm: his ratings on these movies will further help our models to understand what features makes a good(bad) movie according to this user.
